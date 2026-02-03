@@ -1,0 +1,35 @@
+
+{
+  "short_name": "VIN Scan",
+  "name": "VIN Scan Pro - Stock Auto Maroc",
+  "id": "com.stockautomaroc.vinscan",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3202/3202926.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3202/3202926.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay"],
+  "orientation": "portrait",
+  "theme_color": "#1d4ed8",
+  "background_color": "#f1f5f9",
+  "description": "Scan intelligent de NIV (VIN) et gestion de stock automobile par IA pour les parcs VN/VO.",
+  "categories": ["business", "productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Nouveau Scan",
+      "url": "/",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/3202/3202926.png", "sizes": "192x192" }]
+    }
+  ]
+}
