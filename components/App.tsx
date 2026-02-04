@@ -149,9 +149,9 @@ const App: React.FC = () => {
         const detectedVin = (result.vin || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
         setVehicleData({ 
           vin: detectedVin, 
-          plate: result.plate || '',
-          make: result.make || '',
-          model: result.model || '',
+          plate: (result.plate || '').toUpperCase(),
+          make: (result.make || '').toUpperCase(),
+          model: (result.model || '').toUpperCase(),
           year: result.year || '',
         });
         vibrate('success');
@@ -257,7 +257,6 @@ const App: React.FC = () => {
               <span className="text-[10px] font-black uppercase tracking-widest">Scanner NIV</span>
             </button>
             
-            {/* CARTE GRISE MASQUÉE SI MODE VN */}
             {settings.businessType === 'VO' && (
               <button 
                 onClick={() => handleScan('carte_grise')} 
@@ -286,11 +285,11 @@ const App: React.FC = () => {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Marque</label>
-                  <input value={vehicleData.make || ''} onChange={e => setVehicleData({...vehicleData, make: e.target.value.toUpperCase()})} className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-bold uppercase outline-none focus:border-blue-200" placeholder="EX: BMW" />
+                  <input value={vehicleData.make || ''} onChange={e => setVehicleData({...vehicleData, make: e.target.value.toUpperCase()})} className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-bold uppercase outline-none focus:border-blue-200" placeholder="EX: MG" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Modèle</label>
-                  <input value={vehicleData.model || ''} onChange={e => setVehicleData({...vehicleData, model: e.target.value.toUpperCase()})} className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-bold uppercase outline-none focus:border-blue-200" placeholder="EX: X5" />
+                  <input value={vehicleData.model || ''} onChange={e => setVehicleData({...vehicleData, model: e.target.value.toUpperCase()})} className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-bold uppercase outline-none focus:border-blue-200" placeholder="EX: MG4" />
                 </div>
               </div>
               {error && <div className="p-4 bg-red-50 text-red-600 rounded-2xl text-[10px] font-black uppercase text-center border border-red-100">{error}</div>}
@@ -343,7 +342,6 @@ const App: React.FC = () => {
             </div>
             
             <div className="space-y-6">
-              {/* VN / VO Selector */}
               <div className="space-y-3">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Type de Flotte</label>
                 <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 rounded-2xl border border-slate-200/50">
