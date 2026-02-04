@@ -22,14 +22,21 @@ export default async function handler(req: Request) {
     
     let prompt = "";
     if (mode === 'carte_grise') {
-      prompt = "CARTE GRISE MAROC : Extrait le NIV (champ E), la Marque (D.1), le Modèle (D.3), l'Année (B), et l'Immat (A). JSON uniquement.";
+      prompt = `ANALYSE CARTE GRISE MAROC :
+      - Extrait le NIV (champ E).
+      - Extrait la MARQUE (champ D.1).
+      - Extrait le MODÈLE (champ D.3) : TRÈS IMPORTANT. Convertis tout code technique ou variante en APPELLATION COMMERCIALE STANDARD (ex: au lieu d'un code interne, écris "MG4", "MG ZS", "DACIA DUSTER", "RENAULT EXPRESS").
+      - Extrait l'ANNÉE (champ B).
+      - Extrait l'IMMATRICULATION (champ A).
+      Réponds UNIQUEMENT au format JSON.`;
     } else {
-      prompt = `ANALYSE PHOTO CHÂSSIS/VÉHICULE :
-      1. Trouve impérativement le NIV (VIN) de 17 caractères gravé ou sur étiquette.
-      2. Identifie la MARQUE du constructeur (cherche le logo, ex: MG, Renault, Peugeot).
-      3. Identifie le MODÈLE le plus probable.
-      4. Détermine l'ANNÉE si elle apparaît sur l'étiquette NIV.
-      Réponds UNIQUEMENT en JSON valide. Ne fournis aucun texte avant ou après.`;
+      prompt = `ANALYSE PHOTO VÉHICULE / ÉTIQUETTE NIV :
+      1. NIV (VIN) : Extrait les 17 caractères avec précision.
+      2. MARQUE : Identifie le constructeur (ex: MG, DACIA, RENAULT, HYUNDAI).
+      3. MODÈLE : Identifie l'APPELLATION COMMERCIALE STANDARD et OFFICIELLE du constructeur.
+         RÈGLE CRITIQUE : Sois précis sur les noms commerciaux. Pour MG, distingue clairement selon le design ou le VIN s'il s'agit d'une "MG4", "MG ZS", "MG HS", "MG5", etc. Ne fournis pas de noms de châssis génériques.
+      4. ANNÉE : Extrait l'année si visible sur l'étiquette.
+      Réponds UNIQUEMENT au format JSON.`;
     }
 
     const response = await ai.models.generateContent({
@@ -47,18 +54,18 @@ export default async function handler(req: Request) {
           properties: {
             vin: { type: Type.STRING, description: "Numéro de châssis exact" },
             plate: { type: Type.STRING, description: "Immatriculation" },
-            make: { type: Type.STRING, description: "Marque constructeur" },
-            model: { type: Type.STRING, description: "Modèle précis" },
+            make: { type: Type.STRING, description: "Marque officielle constructeur" },
+            model: { type: Type.STRING, description: "Nom commercial standard du modèle" },
             year: { type: Type.STRING, description: "Année" },
           },
-          required: ["vin"]
+          required: ["vin", "make", "model"]
         },
       },
     });
 
     const resultText = response.text;
     if (!resultText) {
-      return new Response(JSON.stringify({ error: "Impossible de lire les données. Image floue ou reflet ?" }), { status: 200 });
+      return new Response(JSON.stringify({ error: "Aucune donnée extraite. Image illisible ?" }), { status: 200 });
     }
 
     return new Response(resultText, {
@@ -67,7 +74,7 @@ export default async function handler(req: Request) {
 
   } catch (error: any) {
     console.error("API Error:", error);
-    return new Response(JSON.stringify({ error: "Le serveur a rencontré un problème. Vérifiez la connexion." }), { 
+    return new Response(JSON.stringify({ error: "Le serveur a rencontré un problème technique." }), { 
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
